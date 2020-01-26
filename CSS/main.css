@@ -1,0 +1,16 @@
+header{
+    background:rgb(126, 21, 14);
+    text-align: center;
+    color:white;
+    margin:0;
+    padding: 15px 15px 5px 15px;
+}
+body{
+    background:rgb(184, 101, 8);
+    font-family: arial;
+    margin:0;
+}
+
+.fire{
+    visibility: hidden;
+}
