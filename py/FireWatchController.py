@@ -6,6 +6,14 @@ import cv2
 import numpy as np
 import time 
 
+#ar = sl.Serial('/dev/ttyACM0',9600)
+
+try :
+    ar = sl.Serial('/dev/ttyACM0',9600)
+except:
+    print("the board is not connected")
+    runVal = False
+
 
 def stop():
     ar.write(b'1')
@@ -15,25 +23,24 @@ def start():
 
 runVal = True
 
-try :
-    ar = sl.Serial('/dev/ttyACM0',9600)
-except:
-    print("the board is not connected")
-    runVal = False
-
 
 
 video = cv2.VideoCapture(0)
 
 while True:
+    try :
+        ar = sl.Serial('/dev/ttyACM0',9600)
+    except:
+        print("the board is not connected")
+    runVal = False
     (grabbed, frame) = video.read()
     if not grabbed:
-        breakq
+        break
 
     blur = cv2.GaussianBlur(frame, (21,21) ,0)
     hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 
-    lower = [100,150,50]
+    lower = [122,150,50]
     upper = [180,255,255]
     lower = np.array(lower, dtype="uint8")
     upper = np.array(upper, dtype="uint8")
@@ -62,7 +69,7 @@ while True:
     cv2.imshow("masked", mask)
     #cv2.imshow("YCC", imgYCC)
 
-    if int(no_red) > 10000:
+    if int(no_red) > 15000:
         print ('Fire')
         stop()
 
@@ -71,6 +78,9 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    key = cv2.waitKey(20)
+    if key == 114: # reset on r
+        start()
 
 cv2.destroyAllWindows()
 video.release()
